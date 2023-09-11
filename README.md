@@ -1,1 +1,2 @@
-# agent-game
+1.填入openai的api-key
+2.
