@@ -178,6 +178,6 @@ def reflection():
 
 
 if __name__ == '__main__':
-    # predict_action()
-    # predict_response()
+    predict_action()
+    predict_response()
     reflection()
