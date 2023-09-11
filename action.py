@@ -55,7 +55,7 @@ def action_prompt():
     age = basic_memory['age']
     gender = basic_memory['gender']
     job = basic_memory['job']
-    persona_history = summary_memory["1"]
+    persona_history = summary_memory
     objects_around = short_memory["objects"]
 
     prompt = prompt_template.format(
@@ -89,7 +89,7 @@ def conv_prompt():
     age = basic_memory['age']
     gender = basic_memory['gender']
     job = basic_memory['job']
-    persona_history = summary_memory["1"]
+    persona_history = summary_memory
     current_action = short_memory["currently"]
 
     prompt = prompt_template.format(
@@ -155,8 +155,6 @@ def reflection():
     gender = basic_memory['gender']
     job = basic_memory['job']
     persona_history = summary_memory
-    # for event in recent_events:
-    #     events_recently = events_recently + event
     events_recently = recent_events
 
     prompt = prompt_template.format(
