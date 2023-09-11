@@ -30,7 +30,7 @@ logs = [
     'Component BP_Paddle0.PLStaticMesh TreeBranch with tag Collision.Paddle in actor BP_Paddle0 with tag Entity.Paddle leaved 2.5m! Time: 11.758633'
 ]
 
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 api_key = os.environ["OPENAI_API_KEY"]
 llm = OpenAI()
 
