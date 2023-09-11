@@ -1,25 +1,19 @@
 import json
 import os
-from langchain import OpenAI
+from langchain import OpenAI, PromptTemplate
 from memory import update_memory
 
 # load the person's memory
-with open('scrath_memory.json') as f:
-    scrath_memory = json.load(f)
+with open('basic_memory.json') as f:
+    basic_memory = json.load(f)
 
 # load the short memory
 with open('short_memory.json') as f:
     short_memory = json.load(f)
 
-# get actions can be done
-actions = [
-    "swim",
-    "walk",
-    "boat",
-    "rest",
-    "bulid a fire",
-    "bulid a shelter"
-]
+# load the summary-memory
+with open('summary_memory.json') as f:
+    summary_memory = json.load(f)
 
 logs = [
     'LogBlueprintUserMessages: [BP_TestAILogPlayer_C_0] Info from [BP_TestAILogPlayer_C_0] : Tag Als.Gait.Running Added! Time: 1.624091',
@@ -32,23 +26,85 @@ logs = [
     'Component BP_Paddle0.PLStaticMesh TreeBranch with tag Collision.Paddle in actor BP_Paddle0 with tag Entity.Paddle leaved 2.5m! Time: 11.758633'
 ]
 
-os.environ["OPENAI_API_KEY"] = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+os.environ["OPENAI_API_KEY"] = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 api_key = os.environ["OPENAI_API_KEY"]
 llm = OpenAI()
 
 
+def action_prompt():
+    prompt_template = """
+    Persona name:{persona_name}
+    Age:{age}
+    Gender:{gender}
+    Job:{job}
+    
+    Summary of persona's history: 
+    {persona_history}
+    
+    Objects around the persona:
+    {objects_around}
+    
+    Based on the information provided, the most likely action {persona_name} would take next is: 
+    """
+
+    persona_name = basic_memory['name']
+    age = basic_memory['age']
+    gender = basic_memory['gender']
+    job = basic_memory['job']
+    persona_history = summary_memory["1"]
+    objects_around = short_memory["objects"]
+
+    prompt = prompt_template.format(
+        persona_name=persona_name,
+        age=age,
+        gender=gender,
+        job=job,
+        persona_history=persona_history,
+        objects_around=objects_around
+    )
+    return prompt
+
+
+def conv_prompt():
+    prompt_template = """
+    Persona name: <persona_name>
+    Age: <age>
+    Gender: <gender> 
+    Job: <job>
+    
+    Summary of persona's history:
+    <persona_history>  
+    
+    Current action: 
+    <current_action>
+    
+    Based on the information provided, the most likely conversation <persona_name> would say is:
+    """
+
+    persona_name = basic_memory['name']
+    age = basic_memory['age']
+    gender = basic_memory['gender']
+    job = basic_memory['job']
+    persona_history = summary_memory["1"]
+    current_action = short_memory["currently"]
+
+    prompt = prompt_template.format(
+        persona_name=persona_name,
+        age=age,
+        gender=gender,
+        job=job,
+        persona_history=persona_history,
+        current_action=current_action
+    )
+    return prompt
+
+
 def predict_action():
-    latest_memory = update_memory(scrath_memory=scrath_memory, logs=logs)
-    name = latest_memory["name"]
-    age = latest_memory["age"]
-    innate = latest_memory["innate"]
-    learned = latest_memory["learned"]
-    currently = short_memory["currently"]
-    objects = short_memory["objects"]
+    update_memory(memory=short_memory, logs=logs)
+    prompt = action_prompt()
 
     possible_action = llm.generate(
-        prompts=[
-            f"{learned}, {name} is {innate}, {name} is {currently} and there are just {objects} nearby, give me the most possible action {name} will do, response with the following options:{actions}"],
+        prompts=[f"{prompt}"],
         model="text-davinci-003",
         api_type="open_ai"
     )
@@ -58,22 +114,18 @@ def predict_action():
 
 
 def predict_response():
-    name = scrath_memory["name"]
-    innate = scrath_memory["innate"]
-    learned = scrath_memory["learned"]
-    currently = short_memory["currently"]
+    prompt = conv_prompt()
 
-    possible_response = llm.generate(
-        prompts=[
-            f"{learned}, {name} is {innate}, {name} is {currently} , give me the most possible response {name} will say, the response should longer than 10 words."],
+    possible_conv = llm.generate(
+        prompts=[f"{prompt}"],
         model="text-davinci-003",
         api_type="open_ai"
     )
 
-    print(possible_response.generations[0][0].text)
-    return possible_response.generations[0][0].text
+    print(possible_conv.generations[0][0].text)
+    return possible_conv.generations[0][0].text
 
 
 if __name__ == '__main__':
-    predict_action()
+    # predict_action()
     predict_response()
