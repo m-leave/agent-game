@@ -1,7 +1,7 @@
 import re
 
 
-def update_memory(scrath_memory, logs):
+def update_memory(memory, logs):
     """
     receive the object and location, return the event happened nearby
     :param scrath_memory:
@@ -11,14 +11,14 @@ def update_memory(scrath_memory, logs):
     status = get_status_from_log(logs)
     object = get_object_from_log(logs)
     if status:
-        scrath_memory["currently"] = status
+        memory["currently"] = status
     if object:
-        scrath_memory["objects"] = object
-    # print(scrath_memory)
-    return scrath_memory
+        memory["objects"] = object
+    # print(memory)
+    return memory
 
 
-def summary_memory(scrath_memory):
+def summary_memory(summary_memory):
     """
     summary ai's_memory and update it
     :param persona:
