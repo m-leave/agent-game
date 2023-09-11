@@ -117,7 +117,7 @@ def predict_action():
     return possible_action.generations[0][0].text
 
 
-def predict_response():
+def predict_conv():
     prompt = conv_prompt()
 
     possible_conv = llm.generate(
@@ -177,5 +177,5 @@ def reflection():
 
 if __name__ == '__main__':
     predict_action()
-    predict_response()
+    predict_conv()
     reflection()
