@@ -18,15 +18,6 @@ def update_memory(memory, logs):
     return memory
 
 
-def summary_memory(summary_memory):
-    """
-    summary ai's_memory and update it
-    :param persona:
-    :return: new memory
-    """
-    pass
-
-
 def get_status_from_log(logs):
     """
     get the current state from the log
@@ -83,7 +74,6 @@ def get_object_from_log(logs):
     for key in object_data.keys():
         object_str = object_str + key + ","
     return object_str
-
 
 # if __name__ == '__main__':
 #     update_memory(scrath_memory, logs)
